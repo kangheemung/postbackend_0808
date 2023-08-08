@@ -14,8 +14,8 @@ default: &default
   encoding: utf8mb4
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   username: admin
-  password: @
-  host: @
+  password: ^
+  host: ^
 development:
   <<: *default
   database: postbackend_development
