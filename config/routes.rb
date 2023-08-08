@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  root'home#index'
   post '/login'=> 'sessions#login'
   delete '/logout'=> 'sessions#logout'
   get '/logged_in'=> 'sessions#logged_in?'
