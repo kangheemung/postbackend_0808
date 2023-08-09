@@ -2,9 +2,9 @@ Rails.application.routes.draw do
   root'home#index'
   post '/login'=> 'sessions#login'
   delete '/logout'=> 'sessions#logout'
-  get '/logged_in'=> 'sessions#logged_in?'
+  get '/logged_in'=> 'sessions#logged_in'
 
-  get 'users/new'
+  get 'users/new'=>'users#new'
   post'/signin'=>'users#create'
   get 'users/show'
   get 'users/edit'
