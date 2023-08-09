@@ -7,8 +7,9 @@ class UsersController < ApplicationController
     p "================="
     p params
     p "================="
+
         if @user.save
-            session.id=
+          log_in(user)
             render json: { status: :created, user: @user }
         else
             render json: { status: 500 }
@@ -25,7 +26,7 @@ class UsersController < ApplicationController
   private
 
   def users_params
-      params.require(:user).permit(:email, :password, :password_confirmation)
+      params.require(:user).permit(:name,:email, :password, :password_confirmation)
   end
  
   

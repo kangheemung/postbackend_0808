@@ -4,8 +4,8 @@ Rails.application.routes.draw do
   delete '/logout'=> 'sessions#logout'
   get '/logged_in'=> 'sessions#logged_in'
 
-  get 'users/new'=>'users#new'
-  post'/signin'=>'users#create'
+  get '/signup'=>'users#new'
+  post'/signup'=>'users#signup'
   get 'users/show'
   get 'users/edit'
   get 'posts/index'=>'posts#index'
