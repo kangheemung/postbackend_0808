@@ -10,6 +10,7 @@ class UsersController < ApplicationController
     p "================="
 
   if @user.save
+     
     p "=========@user========"
     @user.errors.full_messages
     p "================="
