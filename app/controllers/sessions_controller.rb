@@ -5,7 +5,7 @@ class SessionsController < ApplicationController
     else
         render json: { logged_in: false, message: 'ユーザーが存在しません' }
     end
-end
+  end
 
 
   def login
@@ -17,7 +17,8 @@ end
     else
         render json: { status: 401, errors: ['認証に失敗しました。', '正しいメールアドレス・パスワードを入力し直すか、新規登録を行ってください。'] }
     end
-end
+  end
+  
 
   def logout
     reset_session
@@ -27,5 +28,4 @@ end
   def session_params
       params.require(:user).permit( :email, :password)
   end
-
 end

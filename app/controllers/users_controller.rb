@@ -9,23 +9,26 @@ class UsersController < ApplicationController
     p params
     p "================="
 
-  if @user.save
-     
-    p "=========@user========"
-    @user.errors.full_messages
-    p "================="
-    render json: { status: "success", data: @user }, status: :created
-  else  p "=========else========"
-    @user.errors.full_messages
-    p "================="
-    render json: { status: "error", errors: @user.errors.full_messages }, status: :unprocessable_entity
+    if @user.save
+        login!
+      p "=========@user========"
+      @user.errors.full_messages
+      p "================="
+      render json: { status: "success", data: @user }, status: :created
+    else  p "=========else========"
+      @user.errors.full_messages
+      p "================="
+      render json: { status: "error", errors: @user.errors.full_messages }, status: :unprocessable_entity
+    end
   end
+  def show
+    @user = user.find(params[:id])
+    render json: @user
   end
+
   
 
 
-  def show
-  end
 
   def edit
   end
