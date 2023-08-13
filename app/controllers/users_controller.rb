@@ -10,11 +10,12 @@ class UsersController < ApplicationController
     p "================="
 
     if @user.save
-        login!
+      user_id = @user.id
       p "=========@user========"
       @user.errors.full_messages
       p "================="
-      render json: { status: "success", data: @user }, status: :created
+      render json: { status: "success", data: { id: user_id } }, status: :created
+
     else  p "=========else========"
       @user.errors.full_messages
       p "================="
@@ -22,8 +23,14 @@ class UsersController < ApplicationController
     end
   end
   def show
-    @user = user.find(params[:id])
-    render json: @user
+    @user = User.find_by(id: params[:id])
+  
+    if @user
+      render json: @user
+    else
+      render json: { status: "error", message: "User not found" }, status: :not_found
+    end
+  end
   end
 
   
