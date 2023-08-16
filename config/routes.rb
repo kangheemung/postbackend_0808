@@ -5,7 +5,8 @@ Rails.application.routes.draw do
   post '/login'=> 'sessions#login'
   delete '/logout'=> 'sessions#logout'
   get '/logged_in'=> 'sessions#logged_in'
-  get '/csrf-token' => 'sessions##csrf_token'
+  get '/csrf-token' => 'sessions#csrf_token'
+
   get '/signup'=>'users#new'
   post'/signup'=>'users#signup'
   get 'users/:id/edit'=> 'users#edit'
