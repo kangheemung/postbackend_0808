@@ -1,12 +1,13 @@
 module SessionsHelper
-      def login!
-        session[:user_id] = @user.id
-      end
-      def logged_in?(user)
-         !current_user.nil?
-      end
+  def login(user)
+    session[:id] = user.id
+  end
 
-      def current_user
-        @current_user ||= User.find(session[:id]) if session[:id]
-      end
+  def logged_in?
+    current_user.present?
+  end
+
+  def current_user
+    @current_user ||= User.find_by(id: session[:id]) if session[:id] && User.exists?(session[:id])
+  end
 end

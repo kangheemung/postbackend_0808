@@ -15,8 +15,8 @@ Rails.application.routes.draw do
   
   get 'posts/index'=>'posts#index'
   get 'posts/new'=>'posts#new'
-  get 'posts/:id/edit'=> 'posts#edit'
-  get 'posts/:id/show'=> 'posts#show'
+  get 'posts/:user_id/edit'=> 'posts#edit'
+  get 'posts/:user_id/show'=> 'posts#show'
   post 'posts/create'=>'posts#create'
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end
