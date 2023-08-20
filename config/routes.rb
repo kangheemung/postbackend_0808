@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   resources :users, only: [:index, :show]
   root'home#index'
- 
+
   post '/login'=> 'sessions#login'
   delete '/logout'=> 'sessions#logout'
   get '/logged_in'=> 'sessions#logged_in'

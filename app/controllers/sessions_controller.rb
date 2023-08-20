@@ -1,57 +1,43 @@
 class SessionsController < ApplicationController
   include Authenticatable
-  include SessionsHelper  # Include the SessionsHelper module
-  skip_before_action :verify_authenticity_token
-  before_action :require_login, only: [:login]
+  after_action :csrf_token, only: [:login, :csrf_token]
+  skip_before_action :verify_authenticity_token, only: [:login]
+ 
+
   def logged_in
-    if @current_user
-      render json: { logged_in: true, user: current_user }
+    if logged_in?
+      p"================logged_in====="
+      p params
+      p'====================='
+      render json: { user: current_user }
     else
-      render json: { logged_in: false, message: 'ユーザーが存在しません' }
+      render json: {}, status: :bad_request
     end
   end
 
   def login
-    if current_user.nil?
-      render json: { logged_in: false, message: 'ユーザーが存在しません' }
+    user = User.find_by(email: session_params[:email].downcase)
+    if user && user.authenticate(session_params[:password])
+      
+      render json: { id: user.id, status: 200, message: 'Login success' }
     else
-      payload = {}
-      payload[:iss] = "example_app"
-      payload[:sub] = current_user.id if current_user # Check if current_user exists
-      payload[:exp] = (DateTime.current + 14.days).to_i
-  
-      rsa_private = OpenSSL::PKey::RSA.new(File.read(Rails.root.join('auth/service.key')))
-  
-      token = JWT.encode(payload, rsa_private, 'RS256')
-  
-      cookies.signed[:token] = {
-        value: token,
-        httponly: true,
-        expires: 14.days.from_now
-      }
-  
-      render json: { logged_in: true, user: current_user }
+      render json: { status: "error", errors: ["Invalid email or password"] }, status: :unprocessable_entity
     end
   end
-  
 
-  def logout
+  def destroy
+    forget(current_user)
     reset_session
-    render json: { status: 200, logged_out: true }
   end
 
   def csrf_token
-    render json: { csrf_token: form_authenticity_token }
+    response.headers['X-CSRF-Token'] = form_authenticity_token
+    head :no_content
   end
-  
+
   private
 
   def session_params
-    params.require(:user).permit(:email, :password)
-  end
-  def require_login
-    unless logged_in?
-      redirect_to login_path, notice: 'Please log in to continue'
-    end
+    params.require(:session).permit(:email, :password)
   end
 end
