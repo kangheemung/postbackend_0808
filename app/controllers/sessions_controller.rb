@@ -34,6 +34,7 @@ class SessionsController < ApplicationController
     response.headers['X-CSRF-Token'] = form_authenticity_token
     head :no_content
   end
+  
 
   private
 
