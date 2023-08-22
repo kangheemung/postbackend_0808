@@ -1,7 +1,8 @@
 class SessionsController < ApplicationController
   include Authenticatable
   after_action :csrf_token, only: [:login, :logged_in,:csrf_token]
-  skip_before_action :verify_authenticity_token, only: [:login,:logged_in]
+  skip_before_action :verify_authenticity_token, only: :destroy
+
  
 
   def logged_in
@@ -29,9 +30,9 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    forget(current_user)
-    reset_session
-  end
+    session[:user_id] = nil
+    render json: { message: "Logged out successfully" }
+    end
 
   def csrf_token
     response.headers['X-CSRF-Token'] = form_authenticity_token

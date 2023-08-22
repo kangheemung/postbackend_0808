@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   root'home#index'
 
   post '/login'=> 'sessions#login'
-  delete '/logout'=> 'sessions#logout'
+  delete '/logout'=> 'sessions#destroy'
   get '/logged_in'=> 'sessions#logged_in'
   get '/csrf-token' => 'sessions#csrf_token'
 
