@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
-  resources :users, only: [:index, :show]
+  resources :sessions
+  resources :users
   root'home#index'
 
   post '/login'=> 'sessions#login'
