@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   include Authenticatable
-  after_action :csrf_token, only: [:signup, :update]
+  after_action :csrf_token, only: [:show,:update]
   skip_before_action :verify_authenticity_token, only: [:signup]
 
   def new
@@ -48,7 +48,7 @@ class UsersController < ApplicationController
   end
 
   def edit
-    @user = User.find_by(id: params[:id])
+    @user = User.find_by(id: params[:user_id])
 
     if @user
       render json: { status: 'success', data: { id: @user.id } }, status: :ok
