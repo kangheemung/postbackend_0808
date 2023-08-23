@@ -1,7 +1,8 @@
 class SessionsController < ApplicationController
   include Authenticatable
-  after_action :csrf_token ,only: [:logout,:logged_in]
-  skip_before_action :verify_authenticity_token, only: [:login]
+  after_action :csrf_token, only: [:logout, :logged_in, :destroy]
+
+  skip_before_action :verify_authenticity_token, only: [:login,:destroy]
 
   def logged_in
     if logged_in?
@@ -17,8 +18,6 @@ class SessionsController < ApplicationController
   def login
     user = User.find_by(email: params[:session][:email].downcase)
     if user && user.authenticate(params[:session][:password])
-      #login(user)
-      session[:user_id] = user.id
       render json: { status: "success", logged_in: true, id: user.id, message: 'Login success' }
     else
       render json: { status: "error", errors: ["Invalid email or password"] }, status: :unprocessable_entity
@@ -26,10 +25,12 @@ class SessionsController < ApplicationController
   end
 
   def destroy
+    reset_session # Clear the session
     session[:user_id] = nil
     render json: { message: "Logged out successfully" }
     return
   end
+  
 
   def csrf_token
     response.headers['X-CSRF-Token'] = form_authenticity_token
