@@ -5,14 +5,14 @@ class UsersController < ApplicationController
 
   def new
     @user = User.new
-    render json: { status: 'success', message: 'User signed up successfully' }
+    render json: { status: 'ture', message: 'User signed up successfully' }
   end
 
   def signup
     user = User.new(user_params)
     if user.save
       login(user)
-      return render json: { id: user.id, status: 200, message: 'Signup success' }
+      return render json: { status: 'ture' id: user.id, status: 200, message: 'Signup success' }
     else
       render json: { status: "error", errors: user.errors.full_messages }, status: :unprocessable_entity
     end
