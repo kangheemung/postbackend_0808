@@ -19,6 +19,7 @@ class SessionsController < ApplicationController
   def login
     user = User.find_by(email: params[:session][:email].downcase)
     if user && user.authenticate(params[:session][:password])
+  
       render json: { status: "ture", logged_in: true, id: user.id, message: 'Login success' }
     else
       render json: { status: "error", errors: ["Invalid email or password"] }, status: :unprocessable_entity

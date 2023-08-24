@@ -12,7 +12,7 @@ class UsersController < ApplicationController
     user = User.new(user_params)
     if user.save
       login(user)
-      return render json: { status: 'ture', id: user.id,  message: 'Signup success' }
+      return render json: { status: 'ture', logged_in: true,id: user.id,  message: 'Signup success' }
     else
       render json: { status: "error", errors: user.errors.full_messages }, status: :unprocessable_entity
     end
@@ -21,7 +21,7 @@ class UsersController < ApplicationController
   def show
     token = cookies[:token]
 
-    if token.nil?
+    if token.present?
       render json: { message: 'Unauthorized' }, status: :unauthorized
     else
       begin
@@ -37,7 +37,7 @@ class UsersController < ApplicationController
               name: user.name,
               email: user.email
             }
-          }, status: :ok
+          }, status: :true
         else
           render json: { status: 'error', message: 'User not found' }, status: :not_found
         end
