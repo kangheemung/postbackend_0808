@@ -12,7 +12,7 @@ class UsersController < ApplicationController
     user = User.new(user_params)
     if user.save
       login(user)
-      return render json: { status: 'ture' id: user.id, status: 200, message: 'Signup success' }
+      return render json: { status: 'ture', id: user.id,  message: 'Signup success' }
     else
       render json: { status: "error", errors: user.errors.full_messages }, status: :unprocessable_entity
     end
