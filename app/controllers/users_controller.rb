@@ -1,52 +1,30 @@
 class UsersController < ApplicationController
   include Authenticatable
-
-  after_action :csrf_token, only: [:show, :update]
-  skip_before_action :verify_authenticity_token, only: [:signup]
-
-  def new
-    @user = User.new
-    render json: { status: 'true', message: 'User signed up successfully' }
-  end
-
-  def signup
-    user = User.new(user_params)
-    if user.save
-      login(user)
-      render json: { status: 'true', logged_in: true, id: user.id, message: 'Signup success' }
-    else
-      render json: { status: 'error', errors: user.errors.full_messages }, status: :unprocessable_entity
-    end
-  end
-
-  def show
-    token = cookies[:token]
-
-    if token.blank?
-      render json: { message: 'Unauthorized' }, status: :unauthorized
-    else
-      begin
-        rsa_private = OpenSSL::PKey::RSA.new(File.read(Rails.root.join('auth/service.key')))
-        decoded_token = JWT.decode(token, rsa_private, true, algorithm: 'RS256')
-        user_id = decoded_token.first['sub']
-        user = User.find_by(id: params[:id])
-
-        if user
-          render json: {
-            user: {
-              id: user.id,
-              name: user.name,
-              email: user.email
-            }
-          }, status: :true
+    def signup
+        user = User.create(name: params[:name], email: params[:email], password: params[:password], password_confirmation: params[:password_confirmation])
+        if user.valid?#user有効だったら
+          access_token =token_creator(user)
+            render json: {access_token: access_token}, status: :ok
         else
-          render json: { status: 'error', message: 'User not found' }, status: :not_found
+            render json: {errors: user.errors.full_messages}, status: :ng
         end
-      rescue JWT::DecodeError, JWT::ExpiredSignature, JWT::VerificationError
-        render json: { message: 'Unauthorized' }, status: :unauthorized
-      end
     end
+
+    def show
+      auth_header = request.headers[:Authorization]
+      return render json: {errors: ['No auth token']} unless auth_header
+      token = auth_header.split(" ")[1] # Bearer token
+      return render json: {errors: ['No auth token']} unless token
+
+      payload, = JWT.decode(token, 'super_strong_secret')
+      user_id = payload['data']['user_id']
+      user = User.find_by(id: user_id)
+      return render json: {errors: ['Invalid token']} unless user
+
+      render json: {user: {name: user.name, email: user.email}}, status: :ok
   end
+  
+ 
 
   def edit
     @user = User.find_by(id: params[:id])
@@ -68,12 +46,7 @@ class UsersController < ApplicationController
   end
 
   private
-
   def user_params
     params.require(:user).permit(:name, :email, :password, :password_confirmation)
-  end
-
-  def csrf_token
-    response.headers['X-CSRF-Token'] = request_forgery_protection_token if request_forgery_protection_token.present?
   end
 end

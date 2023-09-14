@@ -1,41 +1,40 @@
 class SessionsController < ApplicationController
   include Authenticatable
-  after_action :csrf_token, only: [:logout, :logged_in, :destroy]
 
-  skip_before_action :verify_authenticity_token, only: [:login,:destroy]
+  # Remove the after_action and protect_from_forgery callbacks
+  after_action :csrf_token, only: [:logout, :logged_in, :destroy]
+  skip_before_action :verify_authenticity_token, only: [:login, :destroy]
 
   def logged_in
-    if logged_in?
+    if @current_user
       p "================logged_in====="
       p params
       p '====================='
-      login(user) # Call the login method from the SessionsHelper module
-      render json: { status: "ture", logged_in: true, id: user.id, message: 'Login success' }
+     # Call the login method from the SessionsHelper module
+      render json: { logged_in: true,user: @current_user ,message: 'Login success' }
     else
       render json: { status: "error", errors: ["Invalid email or password"] }, status: :unprocessable_entity
     end
   end
 
   def login
-    user = User.find_by(email: params[:session][:email].downcase)
-    if user && user.authenticate(params[:session][:password])
-  
-      render json: { status: "ture", logged_in: true, id: user.id, message: 'Login success' }
+    user = User.find_by(email: params[:email])
+    if user && user.authenticate(params[:password])
+      access_token = token_creator(user)
+      render json: {access_token: access_token}, status: :ok
     else
-      render json: { status: "error", errors: ["Invalid email or password"] }, status: :unprocessable_entity
+      # Authentication failed
+      render json: {errors: user.errors.full_messages}, status: :ng
     end
   end
 
   def destroy
-    reset_session # Clear the session
-    session[:user_id] = nil
-    render json: { message: "Logged out successfully" }
-    return
-  end
-  
+    # Clear the session and JWT from headers
+    response.headers.delete('Authorization')
 
-  def csrf_token
-    response.headers['X-CSRF-Token'] = form_authenticity_token
-    head :ok
+    render json: { message: "Logged out successfully" }
   end
+
+
+
 end

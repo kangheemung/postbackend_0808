@@ -240,7 +240,6 @@ DEPENDENCIES
   sass-rails (>= 6)
   selenium-webdriver (>= 4.0.0.rc1)
   spring
-  sprockets-rails
   turbolinks (~> 5)
   tzinfo-data
   web-console (>= 4.1.0)

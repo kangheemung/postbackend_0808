@@ -1,18 +1,14 @@
 Rails.application.routes.draw do
-  resources :sessions
-  resources :users
   root'home#index'
 
-  post '/login'=> 'sessions#login'
+  post 'login'=> 'sessions#login'
   delete '/logout'=> 'sessions#destroy'
   get '/logged_in'=> 'sessions#logged_in'
-  get '/csrf-token' => 'sessions#csrf_token'
-
-  get '/signup'=>'users#new'
+ 
   post'/signup'=>'users#signup'
   get 'users/:id/edit'=> 'users#edit'
   patch 'users/:id/update'=>'users#update'
-  get 'users/:id'=>'users#show'
+  get 'mypage'=>'users#show'
   
   get 'posts/index'=>'posts#index'
   get 'posts/new'=>'posts#new'
