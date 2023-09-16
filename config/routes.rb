@@ -1,11 +1,11 @@
 Rails.application.routes.draw do
   root'home#index'
 
-  post 'login'=> 'sessions#login'
+  post '/login'=> 'sessions#create'
   delete '/logout'=> 'sessions#destroy'
   get '/logged_in'=> 'sessions#logged_in'
  
-  post'/signup'=>'users#signup'
+  post'/signup'=>'users#create'
   get 'users/:id/edit'=> 'users#edit'
   patch 'users/:id/update'=>'users#update'
   get 'mypage'=>'users#show'
