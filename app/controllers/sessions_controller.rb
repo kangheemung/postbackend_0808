@@ -6,7 +6,7 @@ class SessionsController < ApplicationController
       render json: { access_token: access_token }, status: :ok
     else
       # Authentication failed
-      render json: { errors: ['Invalid email or password']}, status: :unprocessable_entity
+      render json: { errors: ['Invalid email or password']}, status: :ng
     end
   end
 end
